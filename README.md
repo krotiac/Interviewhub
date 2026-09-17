@@ -1,36 +1,74 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# InterviewHub
 
-## Getting Started
+InterviewHub is a full-stack technical interview platform designed for conducting collaborative coding interviews with real-time communication and code execution.
 
-First, run the development server:
+It provides an environment where interviewers and candidates can work together, write and execute code, and conduct technical interviews through a shared platform.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Real-time collaborative interview environment
+- In-browser code editor
+- Multi-language code execution
+- Real-time communication between interview participants
+- Interview session management
+- Backend API for application logic
+- Sandboxed code execution
+- Database-backed application state
+- Docker-based development environment
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Tech Stack
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Frontend
 
-## Learn More
+- Next.js
+- React
+- TypeScript
+- Tailwind CSS
+- Monaco Editor
 
-To learn more about Next.js, take a look at the following resources:
+### Backend
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Node.js
+- TypeScript
+- Express
+- Socket.IO
+- Prisma
+- PostgreSQL
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Code Execution
 
-## Deploy on Vercel
+- Sandboxed execution environment
+- Docker
+- C++
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Infrastructure
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Docker Compose
+- REST APIs
+- WebSockets
+
+## Architecture
+
+```text
+                    InterviewHub
+                         │
+              ┌──────────┴──────────┐
+              │                     │
+          Frontend               Backend
+          Next.js                Node.js
+              │                     │
+              │              ┌──────┴──────┐
+              │              │             │
+              │          REST API      Socket.IO
+              │              │             │
+              │              └──────┬──────┘
+              │                     │
+              │                  Prisma
+              │                     │
+              │                  Database
+              │
+              │
+              └──── Code Execution ────→ Sandbox
+                                         │
+                                         ↓
+                                    C++ / Programs
