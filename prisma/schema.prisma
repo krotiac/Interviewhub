@@ -1,0 +1,102 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  role         String   @default("CANDIDATE") // INTERVIEWER, CANDIDATE, ADMIN
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  interviewsAsInterviewer Interview[] @relation("Interviewer")
+  interviewsAsCandidate   Interview[] @relation("Candidate")
+  notes                   InterviewNote[]
+  messages                Message[]
+}
+
+model Question {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  difficulty  String
+  starterCode String   // JSON string
+  testCases   String   // JSON string
+  createdAt   DateTime @default(now())
+  
+  interviews  Interview[]
+}
+
+model Interview {
+  id            String    @id @default(uuid())
+  interviewerId String
+  candidateId   String
+  questionId    String?
+  status        String    @default("CREATED") // CREATED, WAITING, ACTIVE, COMPLETED
+  startTime     DateTime?
+  endTime       DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  interviewer   User      @relation("Interviewer", fields: [interviewerId], references: [id])
+  candidate     User      @relation("Candidate", fields: [candidateId], references: [id])
+  question      Question? @relation(fields: [questionId], references: [id])
+
+  notes         InterviewNote[]
+  evaluations   InterviewEvaluation[]
+  submissions   CodeSubmission[]
+  messages      Message[]
+}
+
+model InterviewNote {
+  id            String    @id @default(uuid())
+  interviewId   String
+  interviewerId String
+  content       String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  interview     Interview @relation(fields: [interviewId], references: [id])
+  interviewer   User      @relation(fields: [interviewerId], references: [id])
+}
+
+model InterviewEvaluation {
+  id            String    @id @default(uuid())
+  interviewId   String    @unique
+  scores        String    // JSON string
+  feedback      String
+  createdAt     DateTime  @default(now())
+
+  interview     Interview @relation(fields: [interviewId], references: [id])
+}
+
+model CodeSubmission {
+  id            String    @id @default(uuid())
+  interviewId   String
+  code          String
+  language      String
+  status        String    // QUEUED, RUNNING, PASSED...
+  output        String?
+  executionTime Int?      
+  createdAt     DateTime  @default(now())
+
+  interview     Interview @relation(fields: [interviewId], references: [id])
+}
+
+model Message {
+  id            String    @id @default(uuid())
+  interviewId   String
+  senderId      String
+  content       String
+  createdAt     DateTime  @default(now())
+
+  interview     Interview @relation(fields: [interviewId], references: [id])
+  sender        User      @relation(fields: [senderId], references: [id])
+}
